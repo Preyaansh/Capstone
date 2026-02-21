@@ -1,51 +1,35 @@
 pipeline {
     agent any
 
-    environment {
-        PROJECT_NAME = "Capstone Project"
-    }
-
     stages {
 
         stage('Checkout') {
             steps {
                 echo "===== CHECKOUT STAGE ====="
                 echo "Branch: ${env.BRANCH_NAME}"
-                bat 'git --version'
+                sh 'echo Code checked out successfully'
             }
         }
 
         stage('Build') {
             steps {
                 echo "===== BUILD STAGE ====="
-                echo "Building ${PROJECT_NAME}"
-
-                // Show files in workspace
-                bat 'dir'
-
-                // Simulate build step
-                bat 'echo Compiling HTML/CSS/JS...'
-                bat 'timeout /t 2 >nul'
-                bat 'echo Build Successful'
+                sh 'echo Building project...'
+                sh 'sleep 2'
+                sh 'echo Build completed'
             }
         }
 
         stage('Test') {
             steps {
                 echo "===== TEST STAGE ====="
-
-                // Simulate test checks
-                bat 'echo Running tests...'
-                bat 'timeout /t 2 >nul'
-
-                // Example: Check if index.html exists
-                bat '''
-                if exist index.html (
-                    echo index.html found - Test Passed
-                ) else (
-                    echo index.html missing - Test Failed
+                sh '''
+                if [ -f index.html ]; then
+                    echo "index.html found - Test Passed"
+                else
+                    echo "index.html missing - Test Failed"
                     exit 1
-                )
+                fi
                 '''
             }
         }
@@ -53,9 +37,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo "===== DEPLOY STAGE ====="
-                bat 'echo Deploying application...'
-                bat 'timeout /t 2 >nul'
-                bat 'echo Deployment Completed'
+                sh 'echo Deploying project...'
+                sh 'sleep 2'
+                sh 'echo Deployment successful'
             }
         }
     }
@@ -65,7 +49,7 @@ pipeline {
             echo "===== PIPELINE FINISHED ====="
         }
         success {
-            echo "Pipeline executed successfully!"
+            echo "Pipeline completed successfully!"
         }
         failure {
             echo "Pipeline failed. Please check logs."
