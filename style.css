@@ -1,0 +1,84 @@
+:root { 
+    --neon-cyan: #00f3ff; 
+    --alert-red: #ff4757; 
+}
+
+body { 
+    font-family: 'Rajdhani', sans-serif; 
+    background: #000; 
+    overflow: hidden; 
+    color: white; 
+}
+
+h1, h2, .font-cyber { 
+    font-family: 'Orbitron', sans-serif; 
+}
+
+#canvas-container { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    z-index: 1; 
+}
+
+.cyber-card {
+    background: rgba(2, 6, 23, 0.8);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.9);
+    z-index: 10;
+}
+
+.neon-input {
+    background: rgba(0, 0, 0, 0.6) !important;
+    border: 1px solid rgba(0, 243, 255, 0.15);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neon-input:focus {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.25);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+/* Scanline Overlay */
+.card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 243, 255, 0.03) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0));
+    background-size: 100% 4px, 4px 100%;
+    pointer-events: none;
+}
+
+.scanner-line {
+    width: 100%;
+    height: 3px;
+    background: var(--neon-cyan);
+    box-shadow: 0 0 20px var(--neon-cyan);
+    position: absolute;
+    z-index: 50;
+    top: -10px;
+    opacity: 0;
+}
+
+.scanning .scanner-line { 
+    animation: scan-logic 1.8s ease-in-out forwards; 
+    opacity: 1; 
+}
+
+@keyframes scan-logic { 
+    0% { top: 0%; } 
+    100% { top: 100%; opacity: 0; } 
+}
+
+.hidden-panel { display: none; opacity: 0; }
+.active-panel { display: block; opacity: 1; animation: fadeIn 0.8s ease; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
