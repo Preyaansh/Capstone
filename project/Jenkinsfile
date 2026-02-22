@@ -2,27 +2,28 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone Repository') {
+
+        stage('Clone') {
             steps {
-                echo 'Cloning Capstone repo...'
+                echo "Cloning repository..."
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Build') {
             steps {
-                echo 'Installing dependencies (if backend present)'
+                echo "Building project..."
             }
         }
 
-        stage('Run Backend Server') {
+        stage('Test') {
             steps {
-                echo 'Starting Node/Python IDS backend...'
+                echo "Running tests..."
             }
         }
 
-        stage('Deploy Dashboard') {
+        stage('Deploy') {
             steps {
-                echo 'Deploying AI IDS Dashboard...'
+                echo "Deploying application..."
             }
         }
     }
