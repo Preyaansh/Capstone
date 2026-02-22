@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI IDS Login</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-page" >
+
+<canvas id="matrix"></canvas>
+
+<!-- TERMINAL INTRO -->
+<div id="terminal">
+  <pre id="terminalText"></pre>
+</div>
+
+<!-- LOGIN PANEL -->
+<div class="container" id="loginBox">
+  <div class="lock-icon">🔒</div>
+  <h2>AI-Driven IDS Access</h2>
+
+  <form id="loginForm">
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button type="submit">LOGIN</button>
+    <p class="switch">Don't have an account? <a href="signup.html">Sign Up</a></p>
+  </form>
+
+  <div id="loading" class="loading">Authenticating...</div>
+</div>
+
+<script>
+// MATRIX BACKGROUND
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = "01";
+const matrix = letters.split("");
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+const drops = [];
+
+for (let x = 0; x < columns; x++) drops[x] = 1;
+
+function draw() {
+  ctx.fillStyle = "rgba(0,0,0,0.06)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#00eaff";
+  ctx.font = fontSize + "px monospace";
+
+  for (let i = 0; i < drops.length; i++) {
+    const text = matrix[Math.floor(Math.random()*matrix.length)];
+    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+    if (drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  }
+}
+setInterval(draw, 33);
+
+// TERMINAL INTRO ANIMATION
+const textLines = [
+  "Initializing Secure SDN Environment...",
+  "Loading AI Intrusion Detection Model...",
+  "Accessing Threat Intelligence Database...",
+  "System Ready ✔"
+];
+
+const terminal = document.getElementById("terminalText");
+let lineIndex = 0;
+let charIndex = 0;
+
+function typeLine() {
+  if(lineIndex < textLines.length){
+    if(charIndex < textLines[lineIndex].length){
+      terminal.innerHTML += textLines[lineIndex].charAt(charIndex);
+      charIndex++;
+      setTimeout(typeLine, 40);
+    } else {
+      terminal.innerHTML += "\n";
+      lineIndex++;
+      charIndex = 0;
+      setTimeout(typeLine, 400);
+    }
+  } else {
+    setTimeout(()=>{
+      document.getElementById("terminal").style.display = "none";
+      document.getElementById("loginBox").style.opacity = "1";
+      document.getElementById("loginBox").style.transform = "translateY(0)";
+    }, 500);
+  }
+}
+typeLine();
+
+// LOGIN VALIDATION
+document.getElementById("loginForm").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  const user = document.getElementById("username").value.trim();
+  const pass = document.getElementById("password").value.trim();
+  const box = document.querySelector(".container");
+  const loading = document.getElementById("loading");
+
+  if(user === "" || pass === ""){
+    box.classList.add("shake");
+    setTimeout(()=> box.classList.remove("shake"), 300);
+    return;
+  }
+
+  loading.style.display = "block";
+
+  setTimeout(()=>{
+    loading.innerText = "Access Granted ✔";
+    localStorage.setItem("auth", "true");
+
+    setTimeout(()=>{
+      window.location.href = "dashboard.html";
+    }, 1000);
+
+  }, 2000);
+});
+</script>
+</body>
+</html>

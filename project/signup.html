@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI IDS Sign Up</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-page">
+
+<canvas id="matrix"></canvas>
+
+<div class="container">
+  <div class="lock-icon">🔐</div>
+  <h2>Create Secure Account</h2>
+
+  <form id="signupForm">
+    <input type="text" id="newUser" placeholder="Username" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="newPass" placeholder="Password" required>
+
+    <button type="submit">SIGN UP</button>
+    <p class="switch">Already have an account? <a href="login.html">Login</a></p>
+  </form>
+
+  <div id="loading" class="loading">Creating Secure Profile...</div>
+</div>
+
+<script>
+// MATRIX BACKGROUND
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+const letters = "01";
+const matrix = letters.split("");
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+const drops = [];
+
+for (let x = 0; x < columns; x++) drops[x] = 1;
+
+function draw() {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "#0ff";
+  ctx.font = fontSize + "px monospace";
+
+  for (let i = 0; i < drops.length; i++) {
+    const text = matrix[Math.floor(Math.random() * matrix.length)];
+    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+      drops[i] = 0;
+
+    drops[i]++;
+  }
+}
+setInterval(draw, 33);
+
+// SIGNUP VALIDATION
+document.getElementById("signupForm").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  const user = document.getElementById("newUser").value;
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("newPass").value;
+
+  if(user === "" || email === "" || pass === ""){
+    alert("All fields are required!");
+    return;
+  }
+
+  document.getElementById("loading").style.display = "block";
+
+  setTimeout(()=>{
+    document.getElementById("loading").innerText = "Account Created ✔";
+  }, 2000);
+});
+</script>
+
+</body>
+</html>
