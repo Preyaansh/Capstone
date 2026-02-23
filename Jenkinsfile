@@ -1,58 +1,78 @@
 pipeline {
     agent any
 
+    options {
+        timestamps()
+    }
+
     stages {
 
-        stage('Checkout') {
+        stage('Initialize') {
             steps {
-                echo "===== CHECKOUT STAGE ====="
-                echo "Branch: ${env.BRANCH_NAME}"
-                sh 'echo Code checked out successfully'
+                echo "Initializing pipeline..."
+                deleteDir()
             }
         }
 
-        stage('Build') {
+        stage('Checkout Code') {
             steps {
-                echo "===== BUILD STAGE ====="
-                sh 'echo Building project...'
-                sh 'sleep 2'
-                sh 'echo Build completed'
+                echo "Checking out source code..."
+                checkout scm
             }
         }
 
-        stage('Test') {
+        stage('Install Dependencies') {
             steps {
-                echo "===== TEST STAGE ====="
-                sh '''
-                if [ -f index.html ]; then
-                    echo "index.html found - Test Passed"
-                else
-                    echo "index.html missing - Test Failed"
-                    exit 1
-                fi
-                '''
+                echo "Installing project dependencies..."
+                sh 'echo Installing dependencies'
             }
         }
 
-        stage('Deploy') {
+        stage('Code Quality Check') {
             steps {
-                echo "===== DEPLOY STAGE ====="
-                sh 'echo Deploying project...'
-                sh 'sleep 2'
-                sh 'echo Deployment successful'
+                echo "Running lint checks..."
+                sh 'echo Linting code'
+            }
+        }
+
+        stage('Build Application') {
+            steps {
+                echo "Building application..."
+                sh 'echo Building project'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo "Executing test cases..."
+                sh 'echo Running tests'
+            }
+        }
+
+        stage('Dockerize Application') {
+            steps {
+                echo "Creating Docker image..."
+                sh 'echo docker build simulation'
+            }
+        }
+
+        stage('Deploy Application') {
+            steps {
+                echo "Deploying application..."
+                sh 'echo Deploying to environment'
             }
         }
     }
 
     post {
         always {
-            echo "===== PIPELINE FINISHED ====="
+            echo "Pipeline execution completed."
         }
         success {
-            echo "Pipeline completed successfully!"
+            echo "Build succeeded."
         }
         failure {
-            echo "Pipeline failed. Please check logs."
+            echo "Build failed."
         }
     }
 }
