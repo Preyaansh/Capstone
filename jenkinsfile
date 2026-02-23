@@ -1,78 +1,23 @@
 pipeline {
     agent any
 
-    options {
-        timestamps()
-    }
-
     stages {
-
-        stage('Initialize') {
+        stage('Build') {
             steps {
-                echo "Initializing pipeline..."
-                deleteDir()
+                echo 'Build started...'
             }
         }
 
-        stage('Checkout Code') {
+        stage('Test') {
             steps {
-                echo "Checking out source code..."
-                checkout scm
+                echo 'Running tests...'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Deploy') {
             steps {
-                echo "Installing project dependencies..."
-                sh 'echo Installing dependencies'
+                echo 'Deploying application...'
             }
-        }
-
-        stage('Code Quality Check') {
-            steps {
-                echo "Running lint checks..."
-                sh 'echo Linting code'
-            }
-        }
-
-        stage('Build Application') {
-            steps {
-                echo "Building application..."
-                sh 'echo Building project'
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                echo "Executing test cases..."
-                sh 'echo Running tests'
-            }
-        }
-
-        stage('Dockerize Application') {
-            steps {
-                echo "Creating Docker image..."
-                sh 'echo docker build simulation'
-            }
-        }
-
-        stage('Deploy Application') {
-            steps {
-                echo "Deploying application..."
-                sh 'echo Deploying to environment'
-            }
-        }
-    }
-
-    post {
-        always {
-            echo "Pipeline execution completed."
-        }
-        success {
-            echo "Build succeeded."
-        }
-        failure {
-            echo "Build failed."
         }
     }
 }
