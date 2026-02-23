@@ -17,7 +17,7 @@
 
   <!-- Alert Banner -->
   <div class="alert-banner" id="alertBanner">
-    ⚠ Intrusion Detected: Monitoring Network Traffic...
+    ⚠ Intrusion Detection System Monitoring Live Traffic...
   </div>
 
   <!-- Main Dashboard Grid -->
@@ -26,33 +26,33 @@
     <!-- System Status Cards -->
     <div class="card">
       <h3>SDN Controller</h3>
-      <p class="status active">Active</p>
+      <p class="status active" id="sdnStatus">Loading...</p>
     </div>
 
     <div class="card">
       <h3>AI Model</h3>
-      <p class="status active">Running</p>
+      <p class="status active" id="aiStatus">Loading...</p>
     </div>
 
     <div class="card">
       <h3>Traffic Monitor</h3>
-      <p class="status warning">Analyzing</p>
+      <p class="status warning" id="trafficStatus">Loading...</p>
     </div>
 
     <div class="card">
       <h3>Threat Level</h3>
-      <p class="status danger">Medium</p>
+      <p class="status danger" id="threatStatus">Loading...</p>
     </div>
 
     <!-- Charts Section -->
     <div class="chart-box">
       <h3>Network Traffic Distribution</h3>
-      <div class="chart-placeholder">[ Pie Chart Here ]</div>
+      <div class="chart-placeholder">Live Traffic Visualization</div>
     </div>
 
     <div class="chart-box">
       <h3>Intrusion Timeline</h3>
-      <div class="chart-placeholder">[ Timeline Chart Here ]</div>
+      <div class="chart-placeholder">Real-Time Attack Timeline</div>
     </div>
 
     <!-- Logs Table -->
@@ -68,41 +68,70 @@
           </tr>
         </thead>
         <tbody id="logsTable">
-          <tr>
-            <td>12:01:22</td>
-            <td>192.168.1.10</td>
-            <td>DDoS</td>
-            <td class="danger">Blocked</td>
-          </tr>
-          <tr>
-            <td>12:02:10</td>
-            <td>10.0.0.5</td>
-            <td>Probe</td>
-            <td class="warning">Suspicious</td>
-          </tr>
+          <tr><td colspan="4">Loading logs from IDS...</td></tr>
         </tbody>
       </table>
     </div>
 
   </main>
 
-  <script>
-    // Authentication check
-    if (!localStorage.getItem("auth")) {
-      window.location.href = "login.html";
-    }
+<script>
+  // 🔐 Authentication Check
+  if (!localStorage.getItem("auth")) {
+    window.location.href = "login.html";
+  }
 
-    // Logout function
-    function logout() {
-      localStorage.removeItem("auth");
-      window.location.href = "login.html";
-    }
+  function logout() {
+    localStorage.removeItem("auth");
+    window.location.href = "login.html";
+  }
 
-    // Fake blinking intrusion alert
-    setInterval(() => {
-      document.getElementById("alertBanner").classList.toggle("blink");
-    }, 1000);
-  </script>
+  // 🚨 Blinking Alert Banner
+  setInterval(() => {
+    document.getElementById("alertBanner").classList.toggle("blink");
+  }, 1000);
+
+  // 🌐 Backend API Base URL (Ubuntu VM)
+  const API_BASE = "http://172.19.22.127:5000";
+
+  // 📡 Fetch System Status from Flask IDS Backend
+  fetch(`${API_BASE}/status`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("sdnStatus").innerText = data.sdn_controller;
+      document.getElementById("aiStatus").innerText = data.ai_model;
+      document.getElementById("trafficStatus").innerText = data.traffic;
+      document.getElementById("threatStatus").innerText = data.threat;
+    })
+    .catch(err => {
+      console.error("Status Fetch Error:", err);
+    });
+
+  // 📜 Fetch Live Intrusion Logs
+  fetch(`${API_BASE}/logs`)
+    .then(res => res.json())
+    .then(logs => {
+      const table = document.getElementById("logsTable");
+      table.innerHTML = "";
+
+      logs.forEach(log => {
+        table.innerHTML += `
+          <tr>
+            <td>${log.time}</td>
+            <td>${log.ip}</td>
+            <td>${log.attack}</td>
+            <td class="${log.status === 'Blocked' ? 'danger' : 'warning'}">
+              ${log.status}
+            </td>
+          </tr>
+        `;
+      });
+    })
+    .catch(err => {
+      console.error("Logs Fetch Error:", err);
+    });
+
+</script>
 
 </body>
 </html>
